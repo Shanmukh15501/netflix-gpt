@@ -1,7 +1,12 @@
 import React from 'react'
 import Header from '../components/Header'
+import { useState } from 'react'
 
 const Login = () => {
+  const [IsSignIn,SetIsSignIn] = useState(true);
+  const HandleSignInToggle = () =>  {
+    SetIsSignIn(!IsSignIn);
+  }
   return (
     <div className='absolute w-full'>
       <Header />
@@ -12,12 +17,21 @@ const Login = () => {
         className="w-full"
       />
 
-      <form className="w-3/12 h-[400px] absolute top-1/3 left-1/2 transform -translate-x-1/2 -translate-y-1/2 p-12 bg-black text-left bg-opacity-80">
-        <h1 className="font-bold text-3xl m-2 text-white">Sign In</h1>
+      <form className="w-3/12 h-[450px] absolute top-1/3 left-1/2 transform -translate-x-1/2 -translate-y-1/2 p-12 bg-black text-left bg-opacity-80">
+        <h1 className="font-bold text-3xl m-2 text-white">{IsSignIn?"Sign-In":"Sign-Up"}</h1>
 
-        <input 
+          {!IsSignIn ? (
+
+          <input 
           type="text" 
-          placeholder='Email Address or Phone Number' 
+          placeholder='Enter Name' 
+          className='p-3 m-2 w-[90%] bg-gray-600'
+        />
+          ):<></>}
+
+         <input 
+          type="text" 
+          placeholder='Enter Email or Phone Number' 
           className='p-3 m-2 w-[90%] bg-gray-600'
         />
 
@@ -28,11 +42,19 @@ const Login = () => {
         />
 
         <button className='p-3 m-2 w-[90%] bg-red-600 text-white block'>
-          Sign In
+          {IsSignIn?"Sign-In":"Sign-Up"}
         </button>
+  
+
+        <p onClick={HandleSignInToggle} className='p-4 text-white'>
+          {IsSignIn ? (
+            <>Are you new to Netflix? <a href="#" className="p-2 underline underline-offset-4">Sign-Up</a> Now</>
+          ) : (
+            <>Already a user? <a href="#" className="p-2 underline underline-offset-4">Sign-In</a> Now</>
+          )}
+        </p>
 
       </form>
-
     </div>
   )
 }
