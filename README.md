@@ -2,5 +2,11 @@
 - Create React-APP
 - Configure TailwindCSS
 - Header
+- Routing the urls
 - Login Form
 - Sign up Form
+- Form Validation
+- Use Ref Hook
+- FireBase Setup
+- FireBase Deploy
+- Create Sign-up User Account
