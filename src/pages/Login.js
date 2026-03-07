@@ -1,32 +1,61 @@
 import Header from "../components/Header";
-import { useState, useRef } from "react";
+import { useRef, useState } from "react";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import { auth } from "../utils/firebase";
 import { CheckValidData } from "../utils/validate";
+
 const Login = () => {
-  const [IsSignIn, SetIsSignIn] = useState(true);
-  const [FormErrorMsg, SetFormErrorMsg] = useState("");
-  const HandleSignInToggle = () => {
-    SetIsSignIn(!IsSignIn);
-  };
-  const HandleFormData = () => {
+  const [isSignIn, setIsSignIn] = useState(true);
+  const [formErrorMsg, setFormErrorMsg] = useState("");
 
-    const nameValue = name.current ? name.current.value : null;
-
-    const result = CheckValidData(
-      nameValue,
-      email.current.value,
-      password.current.value,
-    );
-
-    console.log("nameValue",nameValue);
-    console.log("email.current.value",email.current.value);
-    console.log("password.current.value",password.current.value);
-
-
-    SetFormErrorMsg(result);
-  };
   const name = useRef(null);
   const email = useRef(null);
   const password = useRef(null);
+
+  const handleSignInToggle = () => {
+    setIsSignIn((prev) => !prev);
+    setFormErrorMsg("");
+  };
+
+  const handleFormData = () => {
+    const nameValue = name.current?.value ?? "";
+    const emailValue = email.current?.value ?? "";
+    const passwordValue = password.current?.value ?? "";
+
+    const result = CheckValidData(
+      isSignIn ? null : nameValue,
+      emailValue,
+      passwordValue,
+    );
+    setFormErrorMsg(result);
+
+    if (result) {
+      return;
+    }
+
+    if (isSignIn) {
+      signInWithEmailAndPassword(auth, emailValue, passwordValue)
+        .then(() => {
+          setFormErrorMsg("");
+          console.log("success")
+        })
+        .catch((error) => {
+          setFormErrorMsg(`${error.code} - ${error.message}`);
+        });
+      return;
+    }
+
+    createUserWithEmailAndPassword(auth, emailValue, passwordValue)
+      .then(() => {
+        setFormErrorMsg("");
+      })
+      .catch((error) => {
+        setFormErrorMsg(`${error.code} - ${error.message}`);
+      });
+  };
 
   return (
     <div className="absolute w-full">
@@ -45,19 +74,17 @@ const Login = () => {
         className="w-3/12 h-[450px] absolute top-1/3 left-1/2 transform -translate-x-1/2 -translate-y-1/2 p-12 bg-black text-left bg-opacity-80"
       >
         <h1 className="font-bold text-3xl m-2 text-white">
-          {IsSignIn ? "Sign-In" : "Sign-Up"}
+          {isSignIn ? "Sign-In" : "Sign-Up"}
         </h1>
 
-        {!IsSignIn ? (
+        {!isSignIn ? (
           <input
             type="text"
             placeholder="Enter Name"
             className="p-3 m-2 w-[90%] bg-gray-600"
             ref={name}
           />
-        ) : (
-          <></>
-        )}
+        ) : null}
 
         <input
           type="text"
@@ -74,31 +101,40 @@ const Login = () => {
         />
 
         <button
-          onClick={HandleFormData}
+          type="button"
+          onClick={handleFormData}
           className="p-3 m-2 w-[90%] bg-red-600 text-white block"
         >
-          {IsSignIn ? "Sign-In" : "Sign-Up"}
+          {isSignIn ? "Sign-In" : "Sign-Up"}
         </button>
 
         <p className="font-bold text-1xl text-red-500 mx-2 text-center">
-          {FormErrorMsg}
+          {formErrorMsg}
         </p>
 
-        <p onClick={HandleSignInToggle} className="p-4 text-white">
-          {IsSignIn ? (
+        <p className="p-4 text-white">
+          {isSignIn ? (
             <>
               Are you new to Netflix?{" "}
-              <a href="#" className="p-2 underline underline-offset-4">
+              <button
+                type="button"
+                onClick={handleSignInToggle}
+                className="p-2 underline underline-offset-4"
+              >
                 Sign-Up
-              </a>{" "}
+              </button>{" "}
               Now
             </>
           ) : (
             <>
               Already a user?{" "}
-              <a href="#" className="p-2 underline underline-offset-4">
+              <button
+                type="button"
+                onClick={handleSignInToggle}
+                className="p-2 underline underline-offset-4"
+              >
                 Sign-In
-              </a>{" "}
+              </button>{" "}
               Now
             </>
           )}

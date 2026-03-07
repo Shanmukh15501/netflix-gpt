@@ -1,5 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
+import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -15,5 +16,6 @@ const app = initializeApp(firebaseConfig);
 
 // Analytics is optional and should only run in the browser.
 const analytics = typeof window !== "undefined" ? getAnalytics(app) : null;
+const auth = getAuth(app);
 
-export { app, analytics };
+export { app, analytics, auth };
