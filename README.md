@@ -9,4 +9,5 @@
 - Use Ref Hook
 - FireBase Setup
 - FireBase Deploy
-- Create Sign-up User Account
+- Create Sign-up / Sign-In User Account
+- Create Redux Store with userSlice
