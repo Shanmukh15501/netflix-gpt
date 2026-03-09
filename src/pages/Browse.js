@@ -1,9 +1,14 @@
-import React from 'react'
-import Header from '../components/Header'
-const Browse = () => {
+import Header from "../components/Header";
+import MainContainer from "../components/MainContainer"
+import SecondaryContainer from "../components/SecondaryContainer"
+const Browse = function () {
   return (
-    <div><Header/></div>
-  )
-}
+    <div className="min-h-screen">
+      <Header />
+      <MainContainer/>
+      <SecondaryContainer/>
+    </div>
+  );
+};
 
-export default Browse
+export default Browse;

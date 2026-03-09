@@ -1,6 +1,6 @@
 import Header from "../components/Header";
 import { useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 
 import {
   createUserWithEmailAndPassword,
@@ -10,9 +10,11 @@ import {
 
 import { auth } from "../utils/firebase";
 import { CheckValidData } from "../utils/validate";
-
+import { addUser } from "../utils/userSlice";
+import {PHOTO_URL} from "../utils/constants"; 
+ 
 const Login = () => {
-  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [isSignIn, setIsSignIn] = useState(true);
   const [formErrorMsg, setFormErrorMsg] = useState("");
@@ -30,7 +32,6 @@ const Login = () => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
 
-      navigate("/browse");
     } catch (error) {
       setFormErrorMsg(`${error.code} - ${error.message}`);
     }
@@ -47,11 +48,19 @@ const Login = () => {
       if (name.trim()) {
         await updateProfile(userCredential.user, {
           displayName: name.trim(),
-          photoURL: "https://avatars.githubusercontent.com/u/34175481?s=400&u=8af90d6dbb7938419577d65f5e22c09b7bc20b41&v=4"
+          photoURL: PHOTO_URL
         });
       }
 
-      navigate("/browse");
+      dispatch(
+        addUser({
+          uid: userCredential.user.uid,
+          email: userCredential.user.email,
+          displayName: name.trim() || userCredential.user.displayName,
+          photoURL: PHOTO_URL,
+        })
+      );
+
     } catch (error) {
       setFormErrorMsg(`${error.code} - ${error.message}`);
     }
